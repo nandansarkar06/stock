@@ -1,5 +1,6 @@
 using learning.Data;
 using learning.Dtos.Stock;
+using learning.Interfaces;
 using learning.Mappers;
 using learning.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,22 +14,24 @@ namespace learning.Controllers
     public class StockController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
+        private readonly IStockRepository _stockRepository;
 
-        public StockController(ApplicationDBContext context)
+        public StockController(ApplicationDBContext context, IStockRepository stockRepository)
         {
             _context = context;
+            _stockRepository = stockRepository;
         }
 
-        [HttpGet("getStocks")]
+        [HttpGet("GetAllStocks")]
         public async Task<IActionResult> GetStocks()
         {
-            var stocks = await _context.Stocks.ToListAsync();
+            var stocks = await _stockRepository.GetAllAsync();
             var StockDto = stocks.Select(s=> s.ToStockDto());
 
             return Ok(stocks);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetStockById")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {   
             var stock = await _context.Stocks.FindAsync(id);
@@ -41,7 +44,7 @@ namespace learning.Controllers
             return Ok(stock.ToStockDto());
         }
 
-        [HttpPost("createStock")]
+        [HttpPost("CreateStock")]
         public async Task<IActionResult> CreateStock([FromBody] CreateStockRequestDto stockDto)
         {
             var stock = stockDto.ToStockFromCreateDto();
@@ -52,7 +55,7 @@ namespace learning.Controllers
             return CreatedAtAction(nameof(GetById), new { id = stock.Id }, stock.ToStockDto());
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("UpdateStockById")]
         public async Task<IActionResult> UpdateStock([FromRoute] int id, [FromBody] UpdateStockDto stockDto)
         {
             var stock = await _context.Stocks.FindAsync(id);
@@ -75,7 +78,7 @@ namespace learning.Controllers
             return Ok(stock.ToStockDto());
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteStockById")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var stock = _context.Stocks.Find(id);
