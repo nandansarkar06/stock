@@ -1,5 +1,7 @@
 using learning.Data;
+using learning.Dtos.Stock;
 using learning.Mappers;
+using learning.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -17,7 +19,7 @@ namespace learning.Controllers
         }
 
         [HttpGet("getStocks")]
-        public ActionResult<IEnumerable<string>> GetStocks()
+        public IActionResult GetStocks()
         {
             var stocks = _context.Stocks.ToList()
             .Select(s=> s.ToStockDto());
@@ -36,6 +38,17 @@ namespace learning.Controllers
             }
 
             return Ok(stock.ToStockDto());
+        }
+
+        [HttpPost("createStock")]
+        public IActionResult CreateStock([FromBody] CreateStockRequestDto stockDto)
+        {
+            var stock = stockDto.ToStockFromCreateDto();
+
+            _context.Stocks.Add(stock);
+            _context.SaveChanges();
+
+            return CreatedAtAction(nameof(GetById), new { id = stock.Id }, stock.ToStockDto());
         }
     }
 }
