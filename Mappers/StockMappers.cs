@@ -34,4 +34,18 @@ public static class StockMappers
         };
     }
 
+    public static Stock ToStockFromUpdateDto(this UpdateStockDto stockDto)
+    {
+        return new Stock
+        {
+            Id = stockDto.Id,
+            Symbol = stockDto.Symbol,
+            CompanyName = stockDto.CompanyName,
+            Purchase = stockDto.Purchase,
+            lastDiv = stockDto.lastDiv,
+            Industry = stockDto.Industry,
+            MarketCap = stockDto.MarketCap
+        };
+    }
+
 }

@@ -57,22 +57,7 @@ namespace learning.Controllers
         [HttpPut("UpdateStockById/{id}")]
         public async Task<IActionResult> UpdateStock([FromRoute] int id, [FromBody] UpdateStockDto stockDto)
         {
-            var stock = await _context.Stocks.FindAsync(id);
-
-            if (stock == null)
-            {
-                return NotFound();
-            }
-
-            stock.Id = stockDto.Id;
-            stock.Symbol = stockDto.Symbol;
-            stock.CompanyName = stockDto.CompanyName;
-            stock.lastDiv = stockDto.lastDiv;
-            stock.Purchase = stockDto.Purchase;
-            stock.Industry = stockDto.Industry;
-            stock.MarketCap = stockDto.MarketCap;
-
-            await _context.SaveChangesAsync();
+            var stock = await _stockRepository.UpdateAsync(id, stockDto.ToStockFromUpdateDto());
 
             return Ok(stock.ToStockDto());
         }
@@ -80,7 +65,15 @@ namespace learning.Controllers
         [HttpDelete("DeleteStockById/{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var stock = await _stockRepository.DeleteAsync(id);
+            var stock = _context.Stocks.Find(id);
+
+            if (stock == null)
+            {
+                return NotFound();
+            }
+
+            _context.Stocks.Remove(stock);
+            await _context.SaveChangesAsync();
 
             return Ok(stock.ToStockDto());
         }

@@ -37,7 +37,7 @@ public class StockRepository : IStockRepository
         await _context.SaveChangesAsync();
 
         return stock;
-        
+
     }
 
     public Task<List<Stock>> GetAllAsync()
@@ -57,8 +57,25 @@ public class StockRepository : IStockRepository
         return stockModel;
     }
 
-    public Task<Stock> UpdateAsync(int id, Stock stock)
+    public async Task<Stock> UpdateAsync(int id, Stock stockDto)
     {
-        throw new NotImplementedException();
+        var stock = await _context.Stocks.FindAsync(id);
+
+        if (stock == null)
+        {
+            return null;
+        }
+
+        stock.Id = stockDto.Id;
+        stock.Symbol = stockDto.Symbol;
+        stock.CompanyName = stockDto.CompanyName;
+        stock.lastDiv = stockDto.lastDiv;
+        stock.Purchase = stockDto.Purchase;
+        stock.Industry = stockDto.Industry;
+        stock.MarketCap = stockDto.MarketCap;
+
+        await _context.SaveChangesAsync();
+
+        return stock;
     }
 }
