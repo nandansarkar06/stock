@@ -15,9 +15,13 @@ public class StockRepository : IStockRepository
         _context = context;
     }
 
-    public Task<Stock> CreateAsync(Stock stock)
+    public async Task<Stock> CreateAsync(Stock stock)
     {
-        throw new NotImplementedException();
+        await _context.Stocks.AddAsync(stock);
+
+        await _context.SaveChangesAsync();
+
+        return stock;
     }
 
     public Task<Stock> DeleteAsync(int id)

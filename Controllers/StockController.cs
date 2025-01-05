@@ -49,10 +49,9 @@ namespace learning.Controllers
         {
             var stock = stockDto.ToStockFromCreateDto();
 
-            await _context.Stocks.AddAsync(stock);
-            await _context.SaveChangesAsync();
+            var createdStock = await _stockRepository.CreateAsync(stock);
 
-            return CreatedAtAction(nameof(GetById), new { id = stock.Id }, stock.ToStockDto());
+            return CreatedAtAction(nameof(GetById), new { id = createdStock.Id }, createdStock.ToStockDto());
         }
 
         [HttpPut("UpdateStockById/{id}")]
