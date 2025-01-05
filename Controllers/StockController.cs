@@ -28,10 +28,10 @@ namespace learning.Controllers
             var stocks = await _stockRepository.GetAllAsync();
             var StockDto = stocks.Select(s=> s.ToStockDto());
 
-            return Ok(stocks);
+            return Ok(StockDto);
         }
 
-        [HttpGet("GetStockById")]
+        [HttpGet("GetStockById/{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {   
             var stock = await _context.Stocks.FindAsync(id);
@@ -55,7 +55,7 @@ namespace learning.Controllers
             return CreatedAtAction(nameof(GetById), new { id = stock.Id }, stock.ToStockDto());
         }
 
-        [HttpPut("UpdateStockById")]
+        [HttpPut("UpdateStockById/{id}")]
         public async Task<IActionResult> UpdateStock([FromRoute] int id, [FromBody] UpdateStockDto stockDto)
         {
             var stock = await _context.Stocks.FindAsync(id);
@@ -78,7 +78,7 @@ namespace learning.Controllers
             return Ok(stock.ToStockDto());
         }
 
-        [HttpDelete("DeleteStockById")]
+        [HttpDelete("DeleteStockById/{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var stock = _context.Stocks.Find(id);
