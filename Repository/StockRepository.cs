@@ -24,9 +24,20 @@ public class StockRepository : IStockRepository
         return stock;
     }
 
-    public Task<Stock> DeleteAsync(int id)
+    public async Task<Stock> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var stock = _context.Stocks.Find(id);
+
+        if (stock == null)
+        {
+            return null;
+        }
+
+        _context.Stocks.Remove(stock);
+        await _context.SaveChangesAsync();
+
+        return stock;
+        
     }
 
     public Task<List<Stock>> GetAllAsync()

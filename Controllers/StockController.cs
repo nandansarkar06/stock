@@ -80,15 +80,7 @@ namespace learning.Controllers
         [HttpDelete("DeleteStockById/{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var stock = _context.Stocks.Find(id);
-
-            if (stock == null)
-            {
-                return NotFound();
-            }
-
-            _context.Stocks.Remove(stock);
-            await _context.SaveChangesAsync();
+            var stock = await _stockRepository.DeleteAsync(id);
 
             return Ok(stock.ToStockDto());
         }
